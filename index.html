@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Graph & SERP Previewer</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f7f6; color: #333; }
+        .container { display: flex; flex-wrap: wrap; gap: 20px; max-width: 1200px; margin: auto; }
+        .input-section, .preview-section { flex: 1; min-width: 300px; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h1, h2 { color: #0056b3; margin-top: 0; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #555; }
+        input[type="text"], textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+        textarea { resize: vertical; min-height: 80px; }
+
+        /* SERP Preview Styles */
+        .serp-preview { border: 1px solid #eee; padding: 15px; border-radius: 4px; background-color: #f9f9f9; margin-bottom: 20px; }
+        .serp-title { color: #1a0dab; font-size: 1.2em; text-decoration: none; cursor: pointer; }
+        .serp-url { color: #006621; font-size: 0.9em; margin-top: 3px; }
+        .serp-description { color: #545454; font-size: 0.9em; margin-top: 5px; line-height: 1.4; }
+
+        /* Open Graph Preview Styles */
+        .og-preview { border: 1px solid #eee; border-radius: 8px; overflow: hidden; max-width: 400px; margin-bottom: 20px; background-color: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .og-image { width: 100%; height: 200px; object-fit: cover; background-color: #f0f0f0; display: block; }
+        .og-content { padding: 15px; }
+        .og-title { font-size: 1.1em; font-weight: bold; color: #333; margin-bottom: 5px; }
+        .og-description { font-size: 0.9em; color: #666; margin-bottom: 10px; line-height: 1.3; }
+        .og-url { font-size: 0.8em; color: #999; text-transform: uppercase; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-section">
+            <h1>Preview Ayarları</h1>
+            <p>Aşağıdaki alanları doldurarak web sayfanızın arama motorlarında ve sosyal medyada nasıl görüneceğini anında önizleyin.</p>
+
+            <label for="pageTitle">Sayfa Başlığı (Title & og:title)</label>
+            <input type="text" id="pageTitle" value="Sıfır Gecikmeli Open Graph ve SERP Önizleyici">
+
+            <label for="pageDescription">Sayfa Açıklaması (Meta Description & og:description)</label>
+            <textarea id="pageDescription">Web sitenizin arama motorlarındaki ve sosyal medya platformlarındaki görünümünü anında görselleştirin. Next.js ile sıfır gecikmeli bir önizleyici nasıl geliştirilir öğrenin.</textarea>
+
+            <label for="pageUrl">Sayfa URL'si (og:url & SERP URL)</label>
+            <input type="text" id="pageUrl" value="https://example.com/open-graph-serp-preview">
+
+            <label for="imageUrl">Open Graph Görsel URL'si (og:image)</label>
+            <input type="text" id="imageUrl" value="https://via.placeholder.com/1200x630?text=Open+Graph+Image">
+        </div>
+
+        <div class="preview-section">
+            <h1>Anlık Önizlemeler</h1>
+
+            <h2>Arama Motoru Sonuç Sayfası (SERP) Önizlemesi</h2>
+            <div class="serp-preview">
+                <a href="#" class="serp-title" id="previewSerpTitle">Sıfır Gecikmeli Open Graph ve SERP Önizleyici</a>
+                <div class="serp-url" id="previewSerpUrl">https://example.com/open-graph-serp-preview</div>
+                <div class="serp-description" id="previewSerpDescription">Web sitenizin arama motorlarındaki ve sosyal medya platformlarındaki görünümünü anında görselleştirin. Next.js ile sıfır gecikmeli bir önizleyici nasıl geliştirilir öğrenin.</div>
+            </div>
+
+            <h2>Sosyal Medya (Open Graph) Önizlemesi</h2>
+            <div class="og-preview">
+                <img src="https://via.placeholder.com/1200x630?text=Open+Graph+Image" alt="Open Graph Image" class="og-image" id="previewOgImage">
+                <div class="og-content">
+                    <div class="og-title" id="previewOgTitle">Sıfır Gecikmeli Open Graph ve SERP Önizleyici</div>
+                    <div class="og-description" id="previewOgDescription">Web sitenizin arama motorlarındaki ve sosyal medya platformlarındaki görünümünü anında görselleştirin. Next.js ile sıfır gecikmeli bir önizleyici nasıl geliştirilir öğrenin.</div>
+                    <div class="og-url" id="previewOgUrl">EXAMPLE.COM</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get references to input elements
+        const pageTitleInput = document.getElementById('pageTitle');
+        const pageDescriptionInput = document.getElementById('pageDescription');
+        const pageUrlInput = document.getElementById('pageUrl');
+        const imageUrlInput = document.getElementById('imageUrl');
+
+        // Get references to preview elements
+        const previewSerpTitle = document.getElementById('previewSerpTitle');
+        const previewSerpUrl = document.getElementById('previewSerpUrl');
+        const previewSerpDescription = document.getElementById('previewSerpDescription');
+
+        const previewOgImage = document.getElementById('previewOgImage');
+        const previewOgTitle = document.getElementById('previewOgTitle');
+        const previewOgDescription = document.getElementById('previewOgDescription');
+        const previewOgUrl = document.getElementById('previewOgUrl');
+
+        // Function to update all previews
+        function updatePreviews() {
+            // Update SERP Preview
+            previewSerpTitle.textContent = pageTitleInput.value; // Updates SERP title
+            previewSerpUrl.textContent = pageUrlInput.value;     // Updates SERP URL
+            previewSerpDescription.textContent = pageDescriptionInput.value; // Updates SERP description
+
+            // Update Open Graph Preview
+            previewOgImage.src = imageUrlInput.value;           // Updates OG image
+            previewOgTitle.textContent = pageTitleInput.value;   // Updates OG title
+            previewOgDescription.textContent = pageDescriptionInput.value; // Updates OG description
+            try {
+                const url = new URL(pageUrlInput.value);
+                previewOgUrl.textContent = url.hostname.toUpperCase(); // Extracts and updates OG domain
+            } catch (e) {
+                previewOgUrl.textContent = "INVALID URL";
+            }
+        }
+
+        // Add event listeners for instant updates to demonstrate "zero-delay"
+        pageTitleInput.addEventListener('input', updatePreviews);
+        pageDescriptionInput.addEventListener('input', updatePreviews);
+        pageUrlInput.addEventListener('input', updatePreviews);
+        imageUrlInput.addEventListener('input', updatePreviews);
+
+        // Initial update when the page loads to show default values
+        updatePreviews();
+    </script>
+</body>
+</html>
